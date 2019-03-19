@@ -13,9 +13,10 @@ const butStyle = {
 export default class Form extends React.Component {
 
     state = {
-        firstName: '',
-        isLoaded: false,
-        items: []
+        searchTerm: '',
+        isLoaded: null,
+        items: [],
+        error: false
     };
 
 
@@ -28,17 +29,25 @@ export default class Form extends React.Component {
 
     onSubmit = e => {
         e.preventDefault();
-        this.getAPI(this.state.firstName);
-        this.props.onSubmit({
-            items: this.state.items
-        });
+        if (this.state.searchTerm.trim().length === 0) {
+            this.setState({
+                error: true
+            });
+            return;
+        } else {
+            this.setState({
+                error: false
+            });
+        }
+
+        this.getAPI(this.state.searchTerm);
+
         this.setState({
             isLoaded: false,
-            firstName: '',
+            searchTerm: '',
         });
-
     };
-    getAPI = async (term) => {
+    getAPI = async term => {
         const url = "https://geodeepdive.org/api/snippets?term=" + term + "&article_limit=100";
 
         const res = await fetch(url);
@@ -47,6 +56,11 @@ export default class Form extends React.Component {
             isLoaded: true,
             items: json
         });
+        this.props.onSubmit({
+            items: json
+        });
+
+
         // fetch(url)
         //     .then(res => res.json())
         //     .then(json => {
@@ -61,22 +75,23 @@ export default class Form extends React.Component {
         return (
             <form>
                 <TextField
+
                     required
-                    name='firstName'
-                    id="standard-with-placeholder"
-                    label="Enter your name"
-                    placeholder="First name"
+                    error={this.state.error ? true : null}
+                    name='searchTerm'
+                    id={this.state.error ? "standard-error" : "standard-with-placeholder"}
+                    label={!this.state.error ? "Search in archive" : 'Input cannot be empty'}
+                    placeholder="Go Badger !"
                     margin="normal"
-                    value={this.state.firstName}
+                    value={this.state.searchTerm}
                     onChange={e => this.change(e)}
                 />
 
-                <Button style={butStyle} variant="contained" color="primary" type='submit' onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search
-
+                <Button style={butStyle} variant="contained" color="primary" type='submit' onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
+                {this.state.isLoaded === false ? <FontAwesomeIcon icon={faSpinner} /> : null}
                 </Button>
 
-                <div>{
-                    this.state.isLoaded ? <FontAwesomeIcon icon={faSpinner} /> : null}
+                <div>
                 </div>
             </form>
 

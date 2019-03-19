@@ -8,16 +8,27 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMeteor } from '@fortawesome/free-solid-svg-icons'
+
 class App extends Component {
 
   state = {
     fields: {},
+    open: []
   };
   onSubmit = updated => {
     this.setState({ fields: updated });
   };
+
+  // handleClick = i => {
+  //   this.setState(state => ({ open[i]: !state.open[i] }));
+  // };
 
   format = (data) => {
 
@@ -35,14 +46,14 @@ class App extends Component {
               <TableCell>URL</TableCell>
               <TableCell>Authors</TableCell>
               <TableCell>Hits</TableCell>
-              {/* <TableCell>highlight</TableCell> */}
+              <TableCell>Highlight</TableCell>
             </TableRow>
           </TableHead>
 
           {data.map((datum, index) => {
             return (
               <TableBody key={datum._gddid}>
-                <TableCell>{index}</TableCell>
+                <TableCell >{index}</TableCell>
                 <TableCell>{datum.pubname}</TableCell>
                 <TableCell>{datum.publisher}</TableCell>
                 {/* <TableCell>{datum._gddid}</TableCell> */}
@@ -51,9 +62,14 @@ class App extends Component {
                 <TableCell><a href={datum.URL} target='_blank'>{datum.URL}</a></TableCell>
                 <TableCell>{datum.authors}</TableCell>
                 <TableCell>{datum.hits}</TableCell>
-                {/* <TableCell>{datum.highlight ? null : datum.hightlight.forEach((hl) => {
-                  return hl; //bugs
-                })}</TableCell> */}
+                <TableCell>
+                  <List >
+
+                    {!datum.highlight ? null : datum.highlight.map((hl, i) => {
+                      return <ListItem key={i}> {i} <ListItemText primary={hl} /></ListItem>;
+                    })}
+                  </List>
+                </TableCell>
 
               </TableBody>
             )
@@ -89,7 +105,7 @@ class App extends Component {
           <h1>COSMOS <FontAwesomeIcon icon={faMeteor} /> </h1>
           <div>
             <p>
-              <span>University of Wisconsin-Madison</span>
+              <span>University of Wisconsin-Madison &nbsp;</span>
               <br />Department of Astronomy
             </p>
             <img src={logo} />
