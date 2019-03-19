@@ -12,3 +12,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.App img{
+  height: 40px;
+}
+
+.App span{
+  font-style: italic;
+}
+
+.App p{
+  display: inline-block
+}
+
