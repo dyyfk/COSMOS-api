@@ -20,20 +20,88 @@ class App extends Component {
 
   state = {
     fields: {},
-    open: []
+    open: [],
+    index: 10,
+    formatted: null
   };
   onSubmit = updated => {
-    this.setState({ fields: updated });
+    this.setState({ fields: updated, index: 10 });
+
+
+    if (this.state.fields.items) {
+      if (this.state.fields.items.success) {
+        if (this.state.fields.items.success.data.length > 0)
+          this.setState({ formatted: this.format(this.state.fields.items.success.data) });
+        else
+          this.setState({ formatted: 'Nothing found, try something else' });
+      }
+    }
   };
 
   // handleClick = i => {
   //   this.setState(state => ({ open[i]: !state.open[i] }));
   // };
 
-  format = (data) => {
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
+  }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  isBottom(el) {
+    if (el)
+      return el.getBoundingClientRect().bottom <= window.innerHeight + 300; // this is when loading should happen
+  }
+
+  handleScroll = () => {
+
+    const wrappedElement = document.getElementById('table');
+    if (this.isBottom(wrappedElement)) {
+      document.removeEventListener('scroll', this.handleScroll);
+      this.state.index += 5;
+    }
+    this.setState({ formatted: this.format(this.state.fields.items.success.data) });
+  }
+
+
+
+
+  format = (data) => {
+    let end = this.state.index;
+    const formatted =
+      data.map((datum, index) => {
+        if (index < end) {
+          return (
+            <TableBody key={datum._gddid}>
+              <TableCell >{index + 1}</TableCell>
+              <TableCell>{datum.pubname}</TableCell>
+              <TableCell>{datum.publisher}</TableCell>
+              {/* <TableCell>{datum._gddid}</TableCell> */}
+              <TableCell>{datum.title}</TableCell>
+              <TableCell>{datum.coverDate}</TableCell>
+              <TableCell><a href={datum.URL} target='_blank'>Link</a></TableCell>
+              <TableCell>{datum.authors}</TableCell>
+              {/* <TableCell>{datum.hits}</TableCell> */}
+              <TableCell>
+                <List>
+                  {!datum.highlight ? null : datum.highlight.map((hl, i) => {
+                    return <ListItem key={i}><ListItemText primary={hl} /></ListItem>;
+                  })}
+                </List>
+              </TableCell>
+            </TableBody>
+          )
+
+
+        } else {
+          return null;
+        }
+
+      })
     return (
-      <Paper>
+      <Paper id="table" >
         <Table>
           <TableHead>
             <TableRow>
@@ -45,41 +113,16 @@ class App extends Component {
               <TableCell>Cover Date</TableCell>
               <TableCell>URL</TableCell>
               <TableCell>Authors</TableCell>
-              <TableCell>Hits</TableCell>
-              <TableCell>Highlight</TableCell>
+              {/* <TableCell>Hits</TableCell> */}
+              <TableCell>Highlight(Hits)</TableCell>
             </TableRow>
           </TableHead>
 
-          {data.map((datum, index) => {
-            return (
-              <TableBody key={datum._gddid}>
-                <TableCell >{index}</TableCell>
-                <TableCell>{datum.pubname}</TableCell>
-                <TableCell>{datum.publisher}</TableCell>
-                {/* <TableCell>{datum._gddid}</TableCell> */}
-                <TableCell>{datum.title}</TableCell>
-                <TableCell>{datum.coverDate}</TableCell>
-                <TableCell><a href={datum.URL} target='_blank'>{datum.URL}</a></TableCell>
-                <TableCell>{datum.authors}</TableCell>
-                <TableCell>{datum.hits}</TableCell>
-                <TableCell>
-                  <List >
-
-                    {!datum.highlight ? null : datum.highlight.map((hl, i) => {
-                      return <ListItem key={i}> {i} <ListItemText primary={hl} /></ListItem>;
-                    })}
-                  </List>
-                </TableCell>
-
-              </TableBody>
-            )
-          })}
+          {formatted}
 
 
-        </Table>
-      </Paper>
-
-
+        </Table >
+      </Paper >
     )
   }
 
@@ -87,20 +130,9 @@ class App extends Component {
 
   render() {
     const form = <Form onSubmit={fields => this.onSubmit(fields)}> </Form>;
-    let data;
-
-    if (this.state.fields.items) {
-      if (this.state.fields.items.success) {
-        if (this.state.fields.items.success.data.length > 0)
-          data = this.format(this.state.fields.items.success.data);
-        else
-          data = 'Nothing found, try something else'
-      }
-    }
-
 
     return (
-      <div className="App">
+      <div className="App" >
         <header>
           <h1>COSMOS <FontAwesomeIcon icon={faMeteor} /> </h1>
           <div>
@@ -111,13 +143,10 @@ class App extends Component {
             <img src={logo} />
           </div>
 
-
-
         </header>
         {form}
-        {data}
-        <p>
-        </p>
+        {this.state.formatted}
+
       </div>
     );
   }

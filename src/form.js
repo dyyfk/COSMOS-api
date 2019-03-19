@@ -6,7 +6,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const butStyle = {
-    marginLeft: '5px',
+    margin: '5px',
     verticalAlign: 'bottom'
 }
 
