@@ -77,9 +77,10 @@ export default class Form extends React.Component {
                 <TextField
 
                     required
+                    disabled={this.state.isLoaded === false ? true : false}
                     error={this.state.error ? true : null}
                     name='searchTerm'
-                    id={this.state.error ? "standard-error" : "standard-with-placeholder"}
+                    id={this.state.error ? "standard-error" : this.state.isLoaded ? "standard-with-placeholder" : 'standard-disabled'}
                     label={!this.state.error ? "Search in archive" : 'Input cannot be empty'}
                     placeholder="Go Badger !"
                     margin="normal"
@@ -87,7 +88,7 @@ export default class Form extends React.Component {
                     onChange={e => this.change(e)}
                 />
 
-                <Button style={butStyle} variant="contained" color="primary" type='submit' onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
+                <Button style={butStyle} disabled={this.state.isLoaded === false ? true : false} variant="contained" color="primary" type='submit' onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
                 {this.state.isLoaded === false ? <FontAwesomeIcon icon={faSpinner} /> : null}
                 </Button>
 
