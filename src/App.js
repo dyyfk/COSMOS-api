@@ -74,7 +74,7 @@ class App extends Component {
       data.map((datum, index) => {
         if (index < end) {
           return (
-            <TableBody key={datum._gddid}>
+            <TableRow key={datum._gddid}>
               <TableCell >{index + 1}</TableCell>
               <TableCell>{datum.pubname}</TableCell>
               <TableCell>{datum.publisher}</TableCell>
@@ -91,7 +91,7 @@ class App extends Component {
                   })}
                 </List>
               </TableCell>
-            </TableBody>
+            </TableRow >
           )
 
 
@@ -106,7 +106,7 @@ class App extends Component {
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>pubname</TableCell>
+              <TableCell>Publication Name</TableCell>
               <TableCell>Publisher</TableCell>
               {/* <TableCell>_gddid</TableCell> */}
               <TableCell>Title</TableCell>
@@ -117,9 +117,9 @@ class App extends Component {
               <TableCell>Highlight(Hits)</TableCell>
             </TableRow>
           </TableHead>
-
-          {formatted}
-
+          <TableBody>
+            {formatted}
+          </TableBody>
 
         </Table >
       </Paper >
