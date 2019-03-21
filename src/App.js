@@ -70,7 +70,7 @@ class App extends Component {
         index: this.state.index + 5
       })
     }
-    this.setState({ formatted: this.format(this.state.fields.items.success.data) });
+    this.state.formatted = this.format(this.state.fields.items.success.data);
   }
 
   handleSort = columnName => {
@@ -133,13 +133,13 @@ class App extends Component {
       <Paper id="table" >
         <Table>
           <colgroup>
-            <col style={{ width: '5%' }} />
-            <col style={{ width: '10%' }} />
+            <col style={{ width: '3%' }} />
+            <col style={{ width: '15%' }} />
             <col style={{ width: '10%' }} />
             <col style={{ width: '20%' }} />
             <col style={{ width: '5%' }} />
-            <col style={{ width: '10%' }} />
-            <col style={{ width: '10%' }} />
+            <col style={{ width: '7%' }} />
+            <col style={{ width: '15%' }} />
             <col style={{ width: '20%' }} />
           </colgroup>
 
