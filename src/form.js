@@ -36,6 +36,7 @@ export default class Form extends React.Component {
         if (this.state.searchTerm.trim().length === 0) {
             this.setState({
                 error: true,
+                isLoaded: true
             });
             return;
         } else {
