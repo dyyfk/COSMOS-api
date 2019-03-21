@@ -29,23 +29,22 @@ export default class Form extends React.Component {
 
     onSubmit = e => {
         e.preventDefault();
+        this.setState({
+            isLoaded: false,
+            searchTerm: '',
+        });
         if (this.state.searchTerm.trim().length === 0) {
             this.setState({
-                error: true
+                error: true,
             });
             return;
         } else {
             this.setState({
                 error: false
             });
+            this.getAPI(this.state.searchTerm);
         }
 
-        this.getAPI(this.state.searchTerm);
-
-        this.setState({
-            isLoaded: false,
-            searchTerm: '',
-        });
     };
     getAPI = async term => {
         const url = "https://geodeepdive.org/api/snippets?term=" + term + "&article_limit=100";
@@ -88,12 +87,11 @@ export default class Form extends React.Component {
                     onChange={e => this.change(e)}
                 />
 
-                <Button style={butStyle} disabled={this.state.isLoaded === false ? true : false} variant="contained" color="primary" type='submit' onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
+                <Button style={butStyle} disabled={this.state.isLoaded === false ? true : false} variant="contained" color="primary" type='submit'
+                    onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
                 {this.state.isLoaded === false ? <FontAwesomeIcon icon={faSpinner} /> : null}
                 </Button>
 
-                <div>
-                </div>
             </form>
 
         );

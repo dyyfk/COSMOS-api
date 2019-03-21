@@ -11,10 +11,18 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMeteor } from '@fortawesome/free-solid-svg-icons'
+import { faMeteor, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+
+
+import moment from 'moment';
+import orderBy from 'lodash/orderBy';
+
+const invertDic = {
+  asc: 'desc',
+  desc: 'asc'
+}
 
 class App extends Component {
 
@@ -22,7 +30,9 @@ class App extends Component {
     fields: {},
     open: [],
     index: 10,
-    formatted: null
+    formatted: null,
+    columnToSort: '',
+    sortDirection: 'desc'
   };
   onSubmit = updated => {
     this.setState({ fields: updated, index: 10 });
@@ -37,10 +47,6 @@ class App extends Component {
       }
     }
   };
-
-  // handleClick = i => {
-  //   this.setState(state => ({ open[i]: !state.open[i] }));
-  // };
 
   componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
@@ -60,28 +66,41 @@ class App extends Component {
     const wrappedElement = document.getElementById('table');
     if (this.isBottom(wrappedElement)) {
       document.removeEventListener('scroll', this.handleScroll);
-      this.state.index += 5;
+      this.setState({
+        index: this.state.index + 5
+      })
     }
     this.setState({ formatted: this.format(this.state.fields.items.success.data) });
   }
 
-
+  handleSort = columnName => {
+    this.setState(state => ({
+      columnToSort: columnName,
+      sortDirection:
+        state.columnToSort === columnName ? invertDic[state.sortDirection] : 'asc'
+    }));
+  }
 
 
   format = (data) => {
     let end = this.state.index;
-    const formatted =
+    data.forEach(element => {
+      element.coverDate = moment(element.coverDate).format('YYYY/MM');
+    });
+    data = orderBy(data, [this.state.columnToSort], [this.state.sortDirection]);
+
+    let formatted =
       data.map((datum, index) => {
         if (index < end) {
           return (
             <TableRow key={datum._gddid}>
-              <TableCell >{index + 1}</TableCell>
+              <TableCell>{index + 1}</TableCell>
               <TableCell>{datum.pubname}</TableCell>
               <TableCell>{datum.publisher}</TableCell>
               {/* <TableCell>{datum._gddid}</TableCell> */}
               <TableCell>{datum.title}</TableCell>
               <TableCell>{datum.coverDate}</TableCell>
-              <TableCell><a href={datum.URL} target='_blank'>Link</a></TableCell>
+              <TableCell><a href={datum.URL} rel="noopener noreferrer" target='_blank'>Link</a></TableCell>
               <TableCell>{datum.authors}</TableCell>
               {/* <TableCell>{datum.hits}</TableCell> */}
               <TableCell>
@@ -91,7 +110,7 @@ class App extends Component {
                   })}
                 </List>
               </TableCell>
-            </TableRow >
+            </TableRow>
           )
 
 
@@ -100,21 +119,38 @@ class App extends Component {
         }
 
       })
+
+    const header = [
+      ['pubname', 'Publication Name'],
+      ['publisher', 'Publisher'],
+      ['title', 'Title'],
+      ['coverDate', 'Cover Date'],
+      ['URL', 'URL'],
+      ['authors', 'Authors'],
+      ['hits', 'Highlight(Hits)']
+    ]
     return (
       <Paper id="table" >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
-              <TableCell>Publication Name</TableCell>
-              <TableCell>Publisher</TableCell>
-              {/* <TableCell>_gddid</TableCell> */}
-              <TableCell>Title</TableCell>
-              <TableCell>Cover Date</TableCell>
-              <TableCell>URL</TableCell>
-              <TableCell>Authors</TableCell>
-              {/* <TableCell>Hits</TableCell> */}
-              <TableCell>Highlight(Hits)</TableCell>
+              {header.map((dict, i) => {
+                return <TableCell key={dict[0]} onClick={
+                  () => {
+
+                    this.setState({
+                      columnToSort: dict[0],
+                    });
+                    this.handleSort(dict[0]);
+                    this.setState({
+                      formatted: this.format(this.state.fields.items.success.data)
+                    });
+                    console.log(this.state);
+                  }} >
+                  {dict[1]}&nbsp;{dict[0] === this.state.columnToSort ? (this.state.sortDirection === 'asc' ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />) : null}</TableCell>
+              })}
+
             </TableRow>
           </TableHead>
           <TableBody>
@@ -140,7 +176,7 @@ class App extends Component {
               <span>University of Wisconsin-Madison &nbsp;</span>
               <br />Department of Astronomy
             </p>
-            <img src={logo} />
+            <img src={logo} alt="UW-Madison logo" />
           </div>
 
         </header>
