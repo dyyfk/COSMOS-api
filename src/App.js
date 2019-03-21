@@ -121,10 +121,10 @@ class App extends Component {
       })
 
     const header = [
-      ['pubname', 'Publication Name'],
+      ['pubname', 'Publication'],
       ['publisher', 'Publisher'],
       ['title', 'Title'],
-      ['coverDate', 'Cover Date'],
+      ['coverDate', 'Date'],
       ['URL', 'URL'],
       ['authors', 'Authors'],
       ['hits', 'Highlight(Hits)']
@@ -132,6 +132,17 @@ class App extends Component {
     return (
       <Paper id="table" >
         <Table>
+          <colgroup>
+            <col style={{ width: '5%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '20%' }} />
+            <col style={{ width: '5%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '20%' }} />
+          </colgroup>
+
           <TableHead>
             <TableRow>
               <TableCell>#</TableCell>
