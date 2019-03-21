@@ -31,7 +31,7 @@ class App extends Component {
     open: [],
     index: 10,
     formatted: null,
-    columnToSort: '',
+    columnToSort: null,
     sortDirection: 'desc'
   };
   onSubmit = updated => {
@@ -74,11 +74,11 @@ class App extends Component {
   }
 
   handleSort = columnName => {
-    this.setState(state => ({
-      columnToSort: columnName,
+    this.setState({
       sortDirection:
-        state.columnToSort === columnName ? invertDic[state.sortDirection] : 'asc'
-    }));
+        this.state.columnToSort === columnName ? invertDic[this.state.sortDirection] : 'asc'
+    });
+    this.state.columnToSort = columnName; // TODO: this hack forces a sync call
   }
 
 
@@ -138,15 +138,10 @@ class App extends Component {
               {header.map((dict, i) => {
                 return <TableCell key={dict[0]} onClick={
                   () => {
-
-                    this.setState({
-                      columnToSort: dict[0],
-                    });
                     this.handleSort(dict[0]);
                     this.setState({
                       formatted: this.format(this.state.fields.items.success.data)
                     });
-                    console.log(this.state);
                   }} >
                   {dict[1]}&nbsp;{dict[0] === this.state.columnToSort ? (this.state.sortDirection === 'asc' ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />) : null}</TableCell>
               })}
