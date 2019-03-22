@@ -1,15 +1,16 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { unstable_Box } from '@material-ui/core/Box';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Grid } from '@material-ui/core';
 
 const butStyle = {
     margin: '5px',
     verticalAlign: 'bottom'
 }
-
 export default class Form extends React.Component {
 
     state = {
@@ -75,7 +76,9 @@ export default class Form extends React.Component {
         return (
             <form>
                 <TextField
-
+                    style={{
+                        marginRight: '20px'
+                    }}
                     required
                     disabled={this.state.isLoaded === false ? true : false}
                     error={this.state.error ? true : null}
@@ -87,12 +90,10 @@ export default class Form extends React.Component {
                     value={this.state.searchTerm}
                     onChange={e => this.change(e)}
                 />
-
                 <Button style={butStyle} disabled={this.state.isLoaded === false ? true : false} variant="contained" color="primary" type='submit'
                     onClick={e => this.onSubmit(e)}><FontAwesomeIcon icon={faSearch} /> Search &nbsp;
-                {this.state.isLoaded === false ? <FontAwesomeIcon icon={faSpinner} /> : null}
+                        {this.state.isLoaded === false ? <FontAwesomeIcon icon={faSpinner} /> : null}
                 </Button>
-
             </form>
 
         );

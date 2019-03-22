@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMeteor, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
@@ -18,6 +19,7 @@ import { faMeteor, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-ic
 
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
+import { Typography } from '@material-ui/core';
 
 const invertDic = {
   asc: 'desc',
@@ -100,13 +102,13 @@ class App extends Component {
               {/* <TableCell>{datum._gddid}</TableCell> */}
               <TableCell>{datum.title}</TableCell>
               <TableCell>{datum.coverDate}</TableCell>
-              <TableCell><a href={datum.URL} rel="noopener noreferrer" target='_blank'>Link</a></TableCell>
+              <TableCell><Button href={datum.URL} rel="noopener noreferrer" color="secondary" target='_blank'>Link</Button></TableCell>
               <TableCell>{datum.authors}</TableCell>
               {/* <TableCell>{datum.hits}</TableCell> */}
               <TableCell>
                 <List>
                   {!datum.highlight ? null : datum.highlight.map((hl, i) => {
-                    return <ListItem key={i}><ListItemText primary={hl} /></ListItem>;
+                    return <ListItem key={i}>{hl}</ListItem>;
                   })}
                 </List>
               </TableCell>
@@ -130,22 +132,26 @@ class App extends Component {
       ['hits', 'Highlight(Hits)']
     ]
     return (
-      <Paper id="table" >
+      <Paper id="table" style={{
+        marginTop: '5px',
+        marginLeft: '5px',
+        marginRight: '5px'
+      }} >
         <Table>
           <colgroup>
-            <col style={{ width: '3%' }} />
-            <col style={{ width: '15%' }} />
+            <col style={{ width: '1%' }} />
             <col style={{ width: '10%' }} />
+            <col style={{ width: '8%' }} />
             <col style={{ width: '20%' }} />
-            <col style={{ width: '5%' }} />
-            <col style={{ width: '7%' }} />
-            <col style={{ width: '15%' }} />
-            <col style={{ width: '20%' }} />
+            <col style={{ width: '3%' }} />
+            <col style={{ width: '3%' }} />
+            <col style={{ width: '10%' }} />
+            <col style={{ width: '40%' }} />
           </colgroup>
 
           <TableHead>
             <TableRow>
-              <TableCell>#</TableCell>
+              <TableCell><Typography component="h6" variant="display2">#</Typography></TableCell>
               {header.map((dict, i) => {
                 return <TableCell key={dict[0]} onClick={
                   () => {
@@ -154,7 +160,10 @@ class App extends Component {
                       formatted: this.format(this.state.fields.items.success.data)
                     });
                   }} >
-                  {dict[1]}&nbsp;{dict[0] === this.state.columnToSort ? (this.state.sortDirection === 'asc' ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />) : null}</TableCell>
+                  <Typography variant="h6">{dict[1]}&nbsp;
+                  {dict[0] === this.state.columnToSort ?
+                      (this.state.sortDirection === 'asc' ? <FontAwesomeIcon icon={faArrowUp} /> : <FontAwesomeIcon icon={faArrowDown} />)
+                      : null}</Typography></TableCell>
               })}
 
             </TableRow>
